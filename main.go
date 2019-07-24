@@ -18,11 +18,13 @@ func main() {
 	rc := config.RedisClient
 
 	if config.HackerNewsConfig.Enabled {
+		log.Println("Getting top stories from HackerNews")
 		hnClient := hackernews.NewHNClient()
 		hnItemIDs := hnClient.GetItemIDs()
 
 		for _, itemId := range hnItemIDs {
 			if checked, _ := alreadyChecked(rc, strconv.Itoa(itemId)); !checked {
+				log.Printf("HackerNews item %v already checked", itemId)
 				continue
 			}
 			hnItem := hnClient.GetItem(itemId)
@@ -47,6 +49,7 @@ func main() {
 		log.Printf("RSS channel %v has %v items", rssChannel.Name, len(channel.Item))
 		for _, item := range channel.Item {
 			if checked, _ := alreadyChecked(rc, item.Link); !checked {
+				log.Printf("RSS item %v already checked", item.Link)
 				continue
 			}
 			items = append(items, item)
@@ -54,7 +57,10 @@ func main() {
 		}
 	}
 
+	log.Printf("Processing %v items", len(items))
+
 	for _, item := range items {
+		log.Println(item)
 		var url string
 		switch value := item.(type) {
 		case hackernews.HNItem:
