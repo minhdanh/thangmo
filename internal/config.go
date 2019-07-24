@@ -1,7 +1,9 @@
 package config
 
 import (
+	"flag"
 	"github.com/go-redis/redis"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"log"
 	"strings"
@@ -29,6 +31,20 @@ type RSSChannel struct {
 }
 
 func NewConfig() *Config {
+	configDir := ""
+
+	flag.String("config-dir", "/etc/thangmo", "Default config directory")
+	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	pflag.Parse()
+	viper.BindPFlags(pflag.CommandLine)
+
+	configDir = viper.GetString("config-dir")
+
+	if configDir != "" {
+		viper.AddConfigPath(configDir)
+		log.Printf("Using config dir: %v", configDir)
+	}
+
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
