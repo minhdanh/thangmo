@@ -2,8 +2,8 @@ package hackernews
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -46,10 +46,8 @@ func (c *HNClient) GetItemIDs() []int {
 
 func (c *HNClient) GetItem(itemID int) HNItem {
 	var item HNItem
-	fmt.Printf("Getting item %v\n", itemID)
+	log.Printf("Getting item %v\n", itemID)
 	url := c.BaseUrl + "item/" + strconv.Itoa(itemID) + ".json?print=pretty"
-
-	fmt.Printf("%v", url)
 
 	response := c.makeRequest(url)
 	json.Unmarshal(response, &item)

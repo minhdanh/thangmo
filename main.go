@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/md5"
 	"github.com/go-redis/redis"
 	"github.com/minhdanh/thangmo-bot/internal"
 	"github.com/minhdanh/thangmo-bot/pkg/bitly"
@@ -31,7 +32,7 @@ func main() {
 			if hnItem.Score >= config.HackerNewsConfig.MinScore {
 				items = append(items, hnItem)
 			} else {
-				log.Printf("HackerNews item %v doesn't have enough points (%v).", itemId, hnItem.Score)
+				log.Printf("HackerNews item %v doesn't have enough points (%v)", itemId, hnItem.Score)
 			}
 			rc.Set(strconv.Itoa(itemId), "", 0)
 		}
@@ -48,24 +49,27 @@ func main() {
 
 		log.Printf("RSS channel %v has %v items", rssChannel.Name, len(channel.Item))
 		for _, item := range channel.Item {
-			if checked, _ := alreadyChecked(rc, item.Link); checked {
+			md5Sum := md5.Sum([]byte(item.Link))
+			linkHash := string(md5Sum[:])
+			if checked, _ := alreadyChecked(rc, linkHash); checked {
 				log.Printf("RSS item %v already checked", item.Link)
 				continue
 			}
 			items = append(items, item)
-			rc.Set(item.Link, "", 0)
+			rc.Set(linkHash, "", 0)
 		}
 	}
 
 	log.Printf("Processing %v items", len(items))
 
 	for _, item := range items {
-		log.Println(item)
 		var url string
 		switch value := item.(type) {
 		case hackernews.HNItem:
+			log.Printf("Sending Telegram message, HackerNews item: %v", value.ID)
 			url = value.URL
 		case rss.Item:
+			log.Printf("Sending Telegram message, RSS item: %v", value.Title)
 			url = value.Link
 		}
 		if config.BitLyEnabled {

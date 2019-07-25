@@ -20,7 +20,7 @@ func NewClient(apiToken string, channel string) *TelegramClient {
 	if err != nil {
 		log.Panic(err)
 	}
-	telegramBot.Debug = true
+	telegramBot.Debug = false
 	client.TelegramBot = telegramBot
 	client.TelegramChannel = channel
 
@@ -47,8 +47,7 @@ func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string) (tgbot
 }
 
 func (t *TelegramClient) sendMessageForHNItem(item hackernews.HNItem, url string) (tgbotapi.Message, error) {
-	//msg := tgbotapi.NewMessageToChannel("@thangmo", "*HackerNews: "+item.Title+"*"+"\n"+url)
-	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, "HackerNews: "+item.Title+" ("+strconv.Itoa(item.Score)+")"+"<a href=\"https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Stack_Overflow_logo.svg/200px-Stack_Overflow_logo.svg.png\">&#8205;</a>\n"+url)
+	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, "HackerNews: "+item.Title+" ("+strconv.Itoa(item.Score)+" points)"+"\n"+url)
 	msg.DisableWebPagePreview = false
 	msg.ParseMode = "HTML"
 	msg.BaseChat.DisableNotification = true
