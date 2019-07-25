@@ -10,12 +10,13 @@ import (
 )
 
 type TelegramClient struct {
-	TelegramBot     *tgbotapi.BotAPI
-	TelegramChannel string
-	YcombinatorLink bool
+	TelegramBot         *tgbotapi.BotAPI
+	TelegramChannel     string
+	TelegramPreviewLink bool
+	YcombinatorLink     bool
 }
 
-func NewClient(apiToken string, channel string, ycombinatorLink bool) *TelegramClient {
+func NewClient(apiToken string, channel string, previewLink bool, ycombinatorLink bool) *TelegramClient {
 	var client TelegramClient
 	telegramBot, err := tgbotapi.NewBotAPI(apiToken)
 	if err != nil {
@@ -24,6 +25,7 @@ func NewClient(apiToken string, channel string, ycombinatorLink bool) *TelegramC
 	telegramBot.Debug = false
 	client.TelegramBot = telegramBot
 	client.TelegramChannel = channel
+	client.TelegramPreviewLink = previewLink
 	client.YcombinatorLink = ycombinatorLink
 
 	return &client
@@ -40,8 +42,9 @@ func (t *TelegramClient) SendMessageForItem(item interface{}, url string) (tgbot
 }
 
 func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string) (tgbotapi.Message, error) {
-	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, item.Title+"\n"+url)
-	msg.DisableWebPagePreview = false
+	msgBody := item.Title + "\n" + url
+	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
+	msg.DisableWebPagePreview = t.TelegramPreviewLink
 	msg.ParseMode = "HTML"
 	msg.BaseChat.DisableNotification = true
 
@@ -49,12 +52,15 @@ func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string) (tgbot
 }
 
 func (t *TelegramClient) sendMessageForHNItem(item hackernews.HNItem, url string) (tgbotapi.Message, error) {
-	msgBody := "HackerNews: " + item.Title + " (" + strconv.Itoa(item.Score) + " points)" + "\n" + url
+	msgBody := "HackerNews: " + item.Title + " (" + strconv.Itoa(item.Score) + " points)"
+	if url != "" {
+		msgBody += "\n" + url
+	}
 	if t.YcombinatorLink {
 		msgBody += "\n" + "https://news.ycombinator.com/item?id=" + strconv.Itoa(item.ID)
 	}
 	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
-	msg.DisableWebPagePreview = false
+	msg.DisableWebPagePreview = t.TelegramPreviewLink
 	msg.ParseMode = "HTML"
 	msg.BaseChat.DisableNotification = true
 

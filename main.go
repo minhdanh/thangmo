@@ -82,7 +82,7 @@ func main() {
 			bitly := bitly.NewClient(config.BitLyApiToken)
 			url = bitly.ShortenUrl(url)
 		}
-		t := telegram.NewClient(config.TelegramApiToken, config.TelegramChannel, config.HackerNewsConfig.YcombinatorLink)
+		t := telegram.NewClient(config.TelegramApiToken, config.TelegramChannel, config.TelegramPreviewLink, config.HackerNewsConfig.YcombinatorLink)
 		_, err := t.SendMessageForItem(item, url)
 		if err != nil {
 			log.Println(err)
