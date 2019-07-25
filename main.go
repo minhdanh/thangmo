@@ -24,7 +24,10 @@ func main() {
 		hnItemIDs := hnClient.GetItemIDs()
 
 		for _, itemId := range hnItemIDs {
-			if checked, _ := alreadyChecked(rc, strconv.Itoa(itemId)); checked {
+			if checked, err := alreadyChecked(rc, strconv.Itoa(itemId)); err != nil {
+				log.Println(err)
+				continue
+			} else if checked {
 				log.Printf("HackerNews item %v already checked", itemId)
 				continue
 			}
@@ -51,7 +54,10 @@ func main() {
 		for _, item := range channel.Item {
 			md5Sum := md5.Sum([]byte(item.Link))
 			linkHash := string(md5Sum[:])
-			if checked, _ := alreadyChecked(rc, linkHash); checked {
+			if checked, err := alreadyChecked(rc, linkHash); err != nil {
+				log.Println(err)
+				continue
+			} else if checked {
 				log.Printf("RSS item \"%v\" already checked", item.Title)
 				continue
 			}
