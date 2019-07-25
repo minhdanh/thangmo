@@ -12,9 +12,10 @@ import (
 type TelegramClient struct {
 	TelegramBot     *tgbotapi.BotAPI
 	TelegramChannel string
+	YcombinatorLink bool
 }
 
-func NewClient(apiToken string, channel string) *TelegramClient {
+func NewClient(apiToken string, channel string, ycombinatorLink bool) *TelegramClient {
 	var client TelegramClient
 	telegramBot, err := tgbotapi.NewBotAPI(apiToken)
 	if err != nil {
@@ -23,6 +24,7 @@ func NewClient(apiToken string, channel string) *TelegramClient {
 	telegramBot.Debug = false
 	client.TelegramBot = telegramBot
 	client.TelegramChannel = channel
+	client.YcombinatorLink = ycombinatorLink
 
 	return &client
 }
@@ -47,7 +49,11 @@ func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string) (tgbot
 }
 
 func (t *TelegramClient) sendMessageForHNItem(item hackernews.HNItem, url string) (tgbotapi.Message, error) {
-	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, "HackerNews: "+item.Title+" ("+strconv.Itoa(item.Score)+" points)"+"\n"+url)
+	msgBody := "HackerNews: " + item.Title + " (" + strconv.Itoa(item.Score) + " points)" + "\n" + url
+	if t.YcombinatorLink {
+		msgBody += "\n" + "https://news.ycombinator.com/item?id=" + strconv.Itoa(item.ID)
+	}
+	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
 	msg.DisableWebPagePreview = false
 	msg.ParseMode = "HTML"
 	msg.BaseChat.DisableNotification = true

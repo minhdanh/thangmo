@@ -52,7 +52,7 @@ func main() {
 			md5Sum := md5.Sum([]byte(item.Link))
 			linkHash := string(md5Sum[:])
 			if checked, _ := alreadyChecked(rc, linkHash); checked {
-				log.Printf("RSS item %v already checked", item.Link)
+				log.Printf("RSS item \"%v\" already checked", item.Title)
 				continue
 			}
 			items = append(items, item)
@@ -69,14 +69,14 @@ func main() {
 			log.Printf("Sending Telegram message, HackerNews item: %v", value.ID)
 			url = value.URL
 		case rss.Item:
-			log.Printf("Sending Telegram message, RSS item: %v", value.Title)
+			log.Printf("Sending Telegram message, RSS item: \"%v\"", value.Title)
 			url = value.Link
 		}
 		if config.BitLyEnabled {
 			bitly := bitly.NewClient(config.BitLyApiToken)
 			url = bitly.ShortenUrl(url)
 		}
-		t := telegram.NewClient(config.TelegramApiToken, config.TelegramChannel)
+		t := telegram.NewClient(config.TelegramApiToken, config.TelegramChannel, config.HackerNewsConfig.YcombinatorLink)
 		_, err := t.SendMessageForItem(item, url)
 		if err != nil {
 			log.Println(err)
