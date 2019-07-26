@@ -44,7 +44,7 @@ func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messag
 func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
 	msgBody := item.Title + "\n" + url
 	if messagePrefix != "" {
-		msgBody = messagePrefix + ": " + item.Title + "\n" + url
+		msgBody = messagePrefix + ": " + msgBody
 	}
 	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
 	msg.DisableWebPagePreview = t.TelegramPreviewLink
