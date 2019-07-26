@@ -12,10 +12,16 @@ import (
 	"strconv"
 )
 
+type ItemWrapper struct {
+	Item   interface{}
+	Prefix string
+}
+
 func main() {
 	config := config.NewConfig()
 
-	var items []interface{}
+	var items []ItemWrapper
+
 	rc := config.RedisClient
 
 	if config.HackerNewsConfig.Enabled {
@@ -33,7 +39,7 @@ func main() {
 			}
 			hnItem := hnClient.GetItem(itemId)
 			if hnItem.Score >= config.HackerNewsConfig.MinScore {
-				items = append(items, hnItem)
+				items = append(items, ItemWrapper{Item: hnItem})
 			} else {
 				log.Printf("HackerNews item %v doesn't have enough points (%v)", itemId, hnItem.Score)
 			}
@@ -61,16 +67,17 @@ func main() {
 				log.Printf("RSS item \"%v\" already checked", item.Title)
 				continue
 			}
-			items = append(items, item)
+			items = append(items, ItemWrapper{Item: item, Prefix: channel.Title})
 			rc.Set(linkHash, "", 0)
 		}
 	}
 
 	log.Printf("Processing %v items", len(items))
 
+	t := telegram.NewClient(config.TelegramApiToken, config.TelegramChannel, config.TelegramPreviewLink, config.HackerNewsConfig.YcombinatorLink)
 	for _, item := range items {
 		var url string
-		switch value := item.(type) {
+		switch value := item.Item.(type) {
 		case hackernews.HNItem:
 			log.Printf("Sending Telegram message, HackerNews item: %v", value.ID)
 			url = value.URL
@@ -82,8 +89,7 @@ func main() {
 			bitly := bitly.NewClient(config.BitLyApiToken)
 			url = bitly.ShortenUrl(url)
 		}
-		t := telegram.NewClient(config.TelegramApiToken, config.TelegramChannel, config.TelegramPreviewLink, config.HackerNewsConfig.YcombinatorLink)
-		_, err := t.SendMessageForItem(item, url)
+		_, err := t.SendMessageForItem(item.Item, url, item.Prefix)
 		if err != nil {
 			log.Println(err)
 		}

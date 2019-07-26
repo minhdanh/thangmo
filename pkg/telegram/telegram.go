@@ -31,18 +31,21 @@ func NewClient(apiToken string, channel string, previewLink bool, ycombinatorLin
 	return &client
 }
 
-func (t *TelegramClient) SendMessageForItem(item interface{}, url string) (tgbotapi.Message, error) {
+func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messagePrefix string) (tgbotapi.Message, error) {
 	switch value := item.(type) {
 	case hackernews.HNItem:
 		return t.sendMessageForHNItem(value, url)
 	case rss.Item:
-		return t.sendMessageForRSSItem(value, url)
+		return t.sendMessageForRSSItem(value, url, messagePrefix)
 	}
 	return tgbotapi.Message{}, errors.New("Item type is incorrect")
 }
 
-func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string) (tgbotapi.Message, error) {
+func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
 	msgBody := item.Title + "\n" + url
+	if messagePrefix != "" {
+		msgBody = messagePrefix + ": " + item.Title + "\n" + url
+	}
 	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
 	msg.DisableWebPagePreview = t.TelegramPreviewLink
 	msg.ParseMode = "HTML"

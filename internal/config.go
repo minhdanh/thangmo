@@ -81,9 +81,10 @@ func NewConfig() *Config {
 	// redis
 	redisCloudUrl := os.Getenv("REDISCLOUD_URL")
 	redisOptions, err := redis.ParseURL(redisCloudUrl)
-	if err != nil {
+	if err == nil {
 		log.Println("Using Redis config from REDISCLOUD_URL")
 	}
+
 	if redisOptions == nil {
 		redisOptions = &redis.Options{
 			Addr:     viper.GetString("redis.host") + ":" + viper.GetString("redis.port"),
