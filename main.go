@@ -67,7 +67,7 @@ func main() {
 				log.Printf("RSS item \"%v\" already checked", item.Title)
 				continue
 			}
-			items = append(items, ItemWrapper{Item: item, Prefix: channel.Title})
+			items = append(items, ItemWrapper{Item: item, Prefix: rssChannel.Name})
 			rc.Set(linkHash, "", 0)
 		}
 	}
