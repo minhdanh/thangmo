@@ -55,7 +55,7 @@ func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string, messag
 }
 
 func (t *TelegramClient) sendMessageForHNItem(item hackernews.HNItem, url string) (tgbotapi.Message, error) {
-	msgBody := "HackerNews: " + item.Title + " (" + strconv.Itoa(item.Score) + " points)"
+	msgBody := "HackerNews: " + item.Title
 	if url != "" {
 		msgBody += "\n" + url
 	}
