@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"github.com/go-redis/redis"
-	"github.com/minhdanh/thangmo-bot/internal"
+	"github.com/minhdanh/thangmo-bot/internal/config"
 	"github.com/minhdanh/thangmo-bot/pkg/bitly"
 	"github.com/minhdanh/thangmo-bot/pkg/hackernews"
 	"github.com/minhdanh/thangmo-bot/pkg/telegram"

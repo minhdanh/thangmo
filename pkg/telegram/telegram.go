@@ -22,6 +22,7 @@ func NewClient(apiToken string, channel string, previewLink bool, ycombinatorLin
 	if err != nil {
 		log.Panic(err)
 	}
+	log.Printf("Authorized on account %s", telegramBot.Self.UserName)
 	telegramBot.Debug = false
 	client.TelegramBot = telegramBot
 	client.TelegramChannel = channel

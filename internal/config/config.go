@@ -11,14 +11,18 @@ import (
 )
 
 type Config struct {
-	TelegramApiToken    string
-	TelegramChannel     string
-	TelegramPreviewLink bool
-	BitLyEnabled        bool
-	BitLyApiToken       string
-	HackerNewsConfig    *HackerNewsConfig
-	RSSChannels         []RSSChannel
-	RedisClient         *redis.Client
+	TelegramApiToken         string
+	TelegramChannel          string
+	TelegramPreviewLink      bool
+	BitLyEnabled             bool
+	BitLyApiToken            string
+	HackerNewsConfig         *HackerNewsConfig
+	RSSChannels              []RSSChannel
+	RedisClient              *redis.Client
+	BotEnabled               bool
+	BotMaxRssChannelsPerUser int
+	Port                     int
+	DatabaseURL              string
 }
 
 type HackerNewsConfig struct {
@@ -62,9 +66,17 @@ func NewConfig() *Config {
 
 	var config Config
 
+	viper.SetDefault("Port", 3000)
+	config.Port = viper.GetInt("port")
+	// database
+	config.DatabaseURL = viper.GetString("database_url")
+	// telegram
 	config.TelegramChannel = viper.GetString("telegram.channel")
 	config.TelegramApiToken = viper.GetString("telegram.api_token")
 	config.TelegramPreviewLink = viper.GetBool("telegram.preview_link")
+	// bot
+	config.BotEnabled = viper.GetBool("bot.enabled")
+	config.BotMaxRssChannelsPerUser = viper.GetInt("bot.max_rss_channels_per_user")
 	// bitly
 	config.BitLyEnabled = viper.GetBool("bitly.enabled")
 	config.BitLyApiToken = viper.GetString("bitly.api_token")

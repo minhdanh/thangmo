@@ -3,22 +3,29 @@ package main
 import (
 	"html/template"
 	"net/http"
-	"os"
+	"strconv"
 	"strings"
 
-	"github.com/minhdanh/thangmo-bot/internal"
+	"github.com/minhdanh/thangmo-bot/internal/bot"
+	"github.com/minhdanh/thangmo-bot/internal/config"
 	"github.com/sirupsen/logrus"
 )
 
 var log = logrus.WithField("cmd", "thangmo-web")
 
 func main() {
-	port := os.Getenv("PORT")
+	config := config.NewConfig()
+
+	port := strconv.Itoa(config.Port)
 	if port == "" {
 		log.WithField("PORT", port).Fatal("$PORT must be set")
 	}
 
-	config := config.NewConfig()
+	if config.BotEnabled {
+		bot := bot.NewBot(config)
+		go bot.Start()
+	}
+
 	templates := template.Must(template.ParseFiles("templates/index.html"))
 	data := struct {
 		TelegramChannel string
