@@ -6,8 +6,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jinzhu/gorm"
 	"github.com/minhdanh/thangmo-bot/internal/bot"
 	"github.com/minhdanh/thangmo-bot/internal/config"
+	"github.com/minhdanh/thangmo-bot/internal/database"
 	"github.com/sirupsen/logrus"
 )
 
@@ -22,6 +24,14 @@ func main() {
 	}
 
 	if config.BotEnabled {
+		db, err := gorm.Open("postgres", config.DatabaseURL)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		database.DBCon = db
+		defer db.Close()
+
 		bot := bot.NewBot(config)
 		go bot.Start()
 	}
