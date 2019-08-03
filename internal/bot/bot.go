@@ -72,7 +72,7 @@ func (b *Bot) Start() {
 			arguments := strings.Split(update.Message.CommandArguments(), " ")
 			switch command {
 			case "start":
-				msg.Text = "Hi! My name is Bot. I will hold a conversation with you.\n\nSend /cancel to stop talking to me."
+				msg.Text = commandHelpMessages["start"]
 				redisClient.HSet(strconv.Itoa(userId), "current_state", "hackernews")
 				redisClient.HSet(strconv.Itoa(userId), "current_step", "begin")
 				stateChanged[userId] = true
@@ -156,11 +156,16 @@ func (b *Bot) Start() {
 					msg.Text = commandHelpMessages["rss"]
 				}
 			case "cancel":
-				msg.Text = "Action canceled. I have nothing to do now."
+				msg.Text = "Action cancelled. I have nothing to do now."
 			case "help":
-				msg.Text = "I will help you"
+				msg.Text = commandHelpMessages["start"]
+				msg.Text += "\n\n*HackerNews*"
+				msg.Text += commandHelpMessages["hackernews"]
+				msg.Text += "\n\n*RSS*"
+				msg.Text += commandHelpMessages["rss"]
+				msg.ParseMode = "Markdown"
 			default:
-				msg.Text = "I don't know that command"
+				msg.Text = "Hmm. I'm not sure what that command is. Try /help to understand me better."
 			}
 		} else {
 			currentState := redisClient.HGet(strconv.Itoa(userId), "current_state").Val()
