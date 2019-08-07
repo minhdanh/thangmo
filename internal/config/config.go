@@ -19,6 +19,7 @@ type Config struct {
 	HackerNewsConfig    *HackerNewsConfig
 	RSSChannels         []RSSChannel
 	RedisClient         *redis.Client
+	Port                int
 }
 
 type HackerNewsConfig struct {
@@ -61,6 +62,9 @@ func NewConfig() *Config {
 	viper.AutomaticEnv()
 
 	var config Config
+
+	viper.SetDefault("Port", 3000)
+	config.Port = viper.GetInt("port")
 
 	config.TelegramChannel = viper.GetString("telegram.channel")
 	config.TelegramApiToken = viper.GetString("telegram.api_token")
