@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/minhdanh/thangmo-bot/internal/config"
+	"github.com/minhdanh/thangmo/internal/config"
 	"github.com/sirupsen/logrus"
 )
 
