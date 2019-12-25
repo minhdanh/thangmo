@@ -92,11 +92,13 @@ func main() {
 			bitly := bitly.NewClient(config.BitLyApiToken)
 			url = bitly.ShortenUrl(url)
 		}
-		_, err := t.SendMessageForItem(item.Item, url, item.Prefix)
-		rc.Set(redisKey, "", 0)
-		if err != nil {
-			log.Println(err)
+		if config.DryRun == false {
+			_, err := t.SendMessageForItem(item.Item, url, item.Prefix)
+			if err != nil {
+				log.Println(err)
+			}
 		}
+		rc.Set(redisKey, "", 0)
 	}
 }
 

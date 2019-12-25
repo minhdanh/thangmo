@@ -20,6 +20,7 @@ type Config struct {
 	RSSChannels         []RSSChannel
 	RedisClient         *redis.Client
 	Port                int
+	DryRun              bool
 }
 
 type HackerNewsConfig struct {
@@ -37,6 +38,7 @@ func NewConfig() *Config {
 	configDir := ""
 
 	flag.String("config-dir", "/etc/thangmo", "Default config directory")
+	pflag.Bool("dry-run", false, "Do not send real Telegram messages")
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
@@ -99,5 +101,7 @@ func NewConfig() *Config {
 	rc := redis.NewClient(redisOptions)
 	config.RedisClient = rc
 
+	// dry-run
+	config.DryRun = viper.GetBool("dry-run")
 	return &config
 }
