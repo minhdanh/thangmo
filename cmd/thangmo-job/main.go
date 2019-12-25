@@ -97,6 +97,8 @@ func main() {
 			if err != nil {
 				log.Println(err)
 			}
+		} else {
+			log.Println("dry-run mode is enabled. Not sending messages.")
 		}
 		rc.Set(redisKey, "", 0)
 	}
