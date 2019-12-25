@@ -7,7 +7,7 @@ import (
 	"github.com/minhdanh/thangmo/pkg/bitly"
 	"github.com/minhdanh/thangmo/pkg/hackernews"
 	"github.com/minhdanh/thangmo/pkg/telegram"
-	"github.com/ungerik/go-rss"
+	"github.com/mmcdole/gofeed"
 	"log"
 	"strconv"
 )
@@ -49,15 +49,17 @@ func main() {
 
 	for _, rssChannel := range config.RSSChannels {
 		log.Printf("Getting RSS content for %v", rssChannel.Name)
-		channel, err := rss.Read(rssChannel.URL)
+
+		fp := gofeed.NewParser()
+		feed, err := fp.ParseURL(rssChannel.URL)
 		if err != nil {
 			log.Println(err)
 			// TODO: notify about error such as time out when connecting to bbc
 			continue
 		}
 
-		log.Printf("RSS channel %v has %v items", rssChannel.Name, len(channel.Item))
-		for _, item := range channel.Item {
+		log.Printf("RSS channel %v has %v items", rssChannel.Name, len(feed.Items))
+		for _, item := range feed.Items {
 			md5Sum := md5.Sum([]byte(item.Link))
 			linkHash := string(md5Sum[:])
 			if checked, err := alreadyChecked(rc, linkHash); err != nil {
@@ -81,7 +83,7 @@ func main() {
 			log.Printf("Sending Telegram message, HackerNews item: %v", value.ID)
 			url = value.URL
 			redisKey = strconv.Itoa(value.ID)
-		case rss.Item:
+		case *gofeed.Item:
 			log.Printf("Sending Telegram message, RSS item: \"%v\"", value.Title)
 			url = value.Link
 			redisKey = item.RssLinkCheckSum
