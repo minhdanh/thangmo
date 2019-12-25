@@ -1,13 +1,5 @@
 rss:
   - name: BBC Vietnamese
     url: "https://www.bbc.co.uk/vietnamese/index.xml"
-  - name: Cafebiz - Kinh doanh
-    url: "http://cafebiz.vn/cau-chuyen-kinh-doanh.rss"
-  - name: Cafebiz - Công nghệ
-    url: "http://cafebiz.vn/cong-nghe.rss"
-  - name: Cafebiz - Sống
-    url: "http://cafebiz.vn/song.rss"
-  - name: Cafebiz - Thời sự
-    url: "http://cafebiz.vn/thoi-su.rss"
-  - name: Cafebiz - Kinh tế mĩ mô
-    url: "http://cafebiz.vn/kinh-te-vi-mo.rss"
+  - name: Cafebiz
+    url: "http://cafebiz.vn/trang-chu.rss"
