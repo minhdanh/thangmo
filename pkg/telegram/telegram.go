@@ -37,13 +37,13 @@ func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messag
 	switch value := item.(type) {
 	case hackernews.HNItem:
 		return t.sendMessageForHNItem(value, url)
-	case gofeed.Item:
+	case *gofeed.Item:
 		return t.sendMessageForRSSItem(value, url, messagePrefix)
 	}
 	return tgbotapi.Message{}, errors.New("Item type is incorrect")
 }
 
-func (t *TelegramClient) sendMessageForRSSItem(item gofeed.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
+func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
 	msgBody := strings.TrimSpace(item.Title) + "\n" + url
 	if messagePrefix != "" {
 		msgBody = messagePrefix + ": " + msgBody
