@@ -2,14 +2,16 @@ package main
 
 import (
 	"crypto/md5"
+	"log"
+	"strconv"
+	"strings"
+
 	"github.com/go-redis/redis"
 	"github.com/minhdanh/thangmo/internal/config"
 	"github.com/minhdanh/thangmo/pkg/bitly"
 	"github.com/minhdanh/thangmo/pkg/hackernews"
 	"github.com/minhdanh/thangmo/pkg/telegram"
 	"github.com/mmcdole/gofeed"
-	"log"
-	"strconv"
 )
 
 type ItemWrapper struct {
@@ -60,7 +62,7 @@ func main() {
 
 		log.Printf("RSS channel %v has %v items", rssChannel.Name, len(feed.Items))
 		for _, item := range feed.Items {
-			md5Sum := md5.Sum([]byte(item.Link))
+			md5Sum := md5.Sum([]byte(strings.TrimSpace(item.Link)))
 			linkHash := string(md5Sum[:])
 			if checked, err := alreadyChecked(rc, linkHash); err != nil {
 				log.Println(err)
@@ -85,7 +87,7 @@ func main() {
 			redisKey = strconv.Itoa(value.ID)
 		case *gofeed.Item:
 			log.Printf("Sending Telegram message, RSS item: \"%v\"", value.Title)
-			url = value.Link
+			url = strings.TrimSpace(value.Link)
 			redisKey = item.RssLinkCheckSum
 		}
 		if config.BitLyEnabled {
