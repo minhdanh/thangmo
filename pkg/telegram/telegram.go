@@ -2,11 +2,12 @@ package telegram
 
 import (
 	"errors"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/minhdanh/thangmo/pkg/hackernews"
-	"github.com/ungerik/go-rss"
 	"log"
 	"strconv"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/minhdanh/thangmo/pkg/hackernews"
+	"github.com/mmcdole/gofeed"
 )
 
 type TelegramClient struct {
@@ -35,13 +36,13 @@ func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messag
 	switch value := item.(type) {
 	case hackernews.HNItem:
 		return t.sendMessageForHNItem(value, url)
-	case rss.Item:
+	case gofeed.Item:
 		return t.sendMessageForRSSItem(value, url, messagePrefix)
 	}
 	return tgbotapi.Message{}, errors.New("Item type is incorrect")
 }
 
-func (t *TelegramClient) sendMessageForRSSItem(item rss.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
+func (t *TelegramClient) sendMessageForRSSItem(item gofeed.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
 	msgBody := item.Title + "\n" + url
 	if messagePrefix != "" {
 		msgBody = messagePrefix + ": " + msgBody
