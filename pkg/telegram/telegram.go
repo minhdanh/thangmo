@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/minhdanh/thangmo/pkg/hackernews"
@@ -43,7 +44,7 @@ func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messag
 }
 
 func (t *TelegramClient) sendMessageForRSSItem(item gofeed.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
-	msgBody := item.Title + "\n" + url
+	msgBody := strings.TrimSpace(item.Title) + "\n" + url
 	if messagePrefix != "" {
 		msgBody = messagePrefix + ": " + msgBody
 	}
