@@ -98,11 +98,12 @@ func main() {
 			_, err := t.SendMessageForItem(item.Item, url, item.Prefix)
 			if err != nil {
 				log.Println(err)
+			} else {
+				rc.Set(redisKey, "", 0)
 			}
 		} else {
 			log.Println("dry-run mode is enabled. Not sending messages.")
 		}
-		rc.Set(redisKey, "", 0)
 	}
 }
 
