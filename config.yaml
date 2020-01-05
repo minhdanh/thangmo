@@ -5,7 +5,3 @@ rss:
     url: "http://cafebiz.vn/tai-chinh.rss"
   - name: Cafebiz - Chính sách
     url: "http://cafebiz.vn/chinh-sach.rss"
-  - name: Cafebiz - Kinh doanh
-    url: "http://cafebiz.vn/cau-chuyen-kinh-doanh.rss"
-  - name: Cafebiz - Pháp luật
-    url: "http://cafebiz.vn/phap-luat.rss"
