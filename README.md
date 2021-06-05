@@ -5,8 +5,15 @@ The name `thangmo` is the role of a man in the villages of ancient Vietnam. His 
 
 If you want to see how this bot works, check out this Telegram channel: https://t.me/thangmo
 
+# Features
+- Filter HackerNews posts by point/score
+- Shorten links with [bitly](https://bitly.com/)
+- Send to multiple Telegram channels
+- Retry messages if rate limited by Telegram
+- That's all :-p
+
 # Configurations
-You can use environment variables or a config file to deploy the bot. For RSS channels you need to use the config file.
+You can use environment variables or a config file to deploy the bot.
 
 ### Using environment variables
 - `HACKERNEWS_ENABLED`: Enable HackerNews notifications.
@@ -23,6 +30,10 @@ You can use environment variables or a config file to deploy the bot. For RSS ch
 ### Using config file (config.yaml)
 
 ```
+retry:
+  enabled: true
+  count: 3
+
 telegram:
   channel: "@thangmo"
   api_token: "<TELEGRAM API TOKEN>"
@@ -39,12 +50,36 @@ hackernews:
 rss:
   - name: BBC Vietnamese
     url: "https://www.bbc.co.uk/vietnamese/index.xml"
-  - name: Cafebiz - Chính sách
-    url: "http://cafebiz.vn/chinh-sach.rss"
+  - name: StatusCode Weekly
+    url: "https://weekly.statuscode.com/rss/"
+    telegram_channel: "-1001340592770"
 
 redis:
   host: localhost
   port: 6379
   username: ""
   password: ""
+```
+RSS channels can also be config via an environment variable named `RSS_CONFIG_BASE64`. Useful if you want to deploy this on Heroku. Just encode a list of the channels (be careful with the indent whitespaces). For example:
+```
+- name: BBC Vietnamese
+  url: "https://www.bbc.co.uk/vietnamese/index.xml"
+- name: StatusCode Weekly
+  url: "https://weekly.statuscode.com/rss/"
+  telegram_channel: "-1001340592770"
+```
+# Development
+There're Dockerfile and docker-compose.yml.sample files to help get this app up and running in a local environment. Remember to set the correct values for the environment variables.
+
+```
+# Create your docker-compose.yml file
+mv docker-compose.yml.sampl docker-compose.yml
+
+# Then update the environment variables in docker-compose.yml
+
+# Then start the containers
+docker compose up
+
+# Then run the job
+docker compose run --rm thangmo /bin/thangmo-job
 ```
