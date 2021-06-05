@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/base64"
 	"flag"
 	"log"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -35,7 +37,7 @@ type HackerNewsConfig struct {
 type RSSChannel struct {
 	Name            string
 	URL             string
-	TelegramChannel string `mapstructure:"telegram_channel"`
+	TelegramChannel string `mapstructure:"telegram_channel" yaml:"telegram_channel"`
 }
 
 func NewConfig() *Config {
@@ -91,14 +93,33 @@ func NewConfig() *Config {
 	hnConfig.MinScore = viper.GetInt("hackernews.min_score")
 	hnConfig.YcombinatorLink = viper.GetBool("hackernews.ycombinator_link")
 	config.HackerNewsConfig = &hnConfig
+
 	// rss
 	var rssChannels []RSSChannel
 	viper.UnmarshalKey("rss", &rssChannels)
+
+	rssBase64 := os.Getenv("RSS_CONFIG_BASE64")
+	if rssBase64 != "" {
+		log.Println("Env var RSS_CONFIG_BASE64 detected, will be used for RSS channels config.")
+		sDec, err := base64.StdEncoding.DecodeString(rssBase64)
+		if err != nil {
+			log.Printf("Error: %v", err)
+		} else {
+			err := yaml.Unmarshal([]byte(sDec), &rssChannels)
+			if err != nil {
+				log.Printf("Error: %v", err)
+			}
+		}
+	}
+
 	config.RSSChannels = rssChannels
+
 	// redis
 	redisCloudUrl := os.Getenv("REDISCLOUD_URL")
 	redisOptions, err := redis.ParseURL(redisCloudUrl)
-	if err == nil {
+	if err != nil {
+		log.Printf("Error: %v", err)
+	} else {
 		log.Println("Using Redis config from REDISCLOUD_URL")
 	}
 
