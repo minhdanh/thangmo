@@ -1,0 +1,29 @@
+retry:
+  enabled: true
+  count: 3
+
+telegram:
+  channel: "@thangmo"
+  api_token: ""
+
+bitly:
+  enabled: true
+  api_token: ""
+
+hackernews:
+  enabled: true
+  min_score: 200
+  ycombinator_link: true
+
+rss:
+  - name: BBC Vietnamese
+    url: "https://www.bbc.co.uk/vietnamese/index.xml"
+  - name: StatusCode Weekly
+    url: "https://weekly.statuscode.com/rss/"
+    telegram_channel: "-1001340592770"
+
+redis:
+  host: localhost
+  port: 6379
+  username: ""
+  password: ""
