@@ -1,0 +1,19 @@
+version: "3"
+services:
+  thangmo:
+    build: .
+    command:
+      - /bin/thangmo-web
+    environment:
+      REDISCLOUD_URL: "redis://redis:6379"
+      BITLY_API_TOKEN: 
+      BITLY_ENABLED: "true"
+      HACKERNEWS_ENABLED: "true"
+      HACKERNEWS_MIN_SCORE: 200
+      HACKERNEWS_YCOMBINATOR_LINK: "true"
+      TELEGRAM_API_TOKEN: 
+      TELEGRAM_CHANNEL: -1001240792667
+      RSS_CONFIG_BASE64: 
+
+  redis:
+    image: redis:alpine
