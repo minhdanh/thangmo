@@ -1,3 +1,7 @@
 *.swp
 thangmo-job
 thangmo-web
+docker-compose.yml
+docker-compose.yaml
+config.yaml
+config.yml
