@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/minhdanh/thangmo/pkg/hackernews"
 	"github.com/mmcdole/gofeed"
 )
@@ -33,22 +33,27 @@ func NewClient(apiToken string, channel string, previewLink bool, ycombinatorLin
 	return &client
 }
 
-func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messagePrefix string) (tgbotapi.Message, error) {
+func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messagePrefix string, telegramChannel string) (tgbotapi.Message, error) {
 	switch value := item.(type) {
 	case hackernews.HNItem:
 		return t.sendMessageForHNItem(value, url)
 	case *gofeed.Item:
-		return t.sendMessageForRSSItem(value, url, messagePrefix)
+		return t.sendMessageForRSSItem(value, url, messagePrefix, telegramChannel)
 	}
 	return tgbotapi.Message{}, errors.New("Item type is incorrect")
 }
 
-func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, messagePrefix string) (tgbotapi.Message, error) {
+func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, messagePrefix string, telegramChannel string) (tgbotapi.Message, error) {
 	msgBody := strings.TrimSpace(item.Title) + "\n" + url
 	if messagePrefix != "" {
 		msgBody = messagePrefix + ": " + msgBody
 	}
-	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
+	msg := tgbotapi.MessageConfig{}
+	if telegramChannel != "" {
+		msg = tgbotapi.NewMessageToChannel(telegramChannel, msgBody)
+	} else {
+		msg = tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
+	}
 	msg.DisableWebPagePreview = t.TelegramPreviewLink
 	msg.ParseMode = "HTML"
 	msg.BaseChat.DisableNotification = true

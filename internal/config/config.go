@@ -2,12 +2,13 @@ package config
 
 import (
 	"flag"
-	"github.com/go-redis/redis"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/go-redis/redis"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -30,8 +31,9 @@ type HackerNewsConfig struct {
 }
 
 type RSSChannel struct {
-	Name string
-	URL  string
+	Name            string
+	URL             string
+	TelegramChannel string `mapstructure:"telegram_channel"`
 }
 
 func NewConfig() *Config {

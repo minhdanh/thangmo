@@ -16,11 +16,10 @@ import (
 )
 
 type ItemWrapper struct {
-	Item             interface{}
-	Prefix           string
-	RssLinkCheckSum  string
-	TelegramApiToken string
-	TelegramChannel  string
+	Item            interface{}
+	Prefix          string
+	RssLinkCheckSum string
+	TelegramChannel string
 }
 
 func getHNItem(itemsChan chan ItemWrapper, hnClient *hackernews.HNClient, rc *redis.Client, minScore int, itemId int, wg *sync.WaitGroup) {
@@ -94,7 +93,7 @@ func main() {
 				log.Printf("RSS item \"%v\" already checked", item.Title)
 				continue
 			}
-			items = append(items, ItemWrapper{Item: item, Prefix: rssChannel.Name, RssLinkCheckSum: linkHash})
+			items = append(items, ItemWrapper{Item: item, Prefix: rssChannel.Name, RssLinkCheckSum: linkHash, TelegramChannel: rssChannel.TelegramChannel})
 		}
 	}
 
@@ -118,7 +117,7 @@ func main() {
 			url = bitly.ShortenUrl(url)
 		}
 		if config.DryRun == false {
-			_, err := t.SendMessageForItem(item.Item, url, item.Prefix)
+			_, err := t.SendMessageForItem(item.Item, url, item.Prefix, item.TelegramChannel)
 			if err != nil {
 				log.Println(err)
 			} else {
