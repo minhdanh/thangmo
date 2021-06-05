@@ -72,7 +72,7 @@ redis:
 ```
 # Heroku deployment
 You can click the `Deploy to Heroku` on the top section of this page to deploy this app to Heroku.
-Please note that you will need to configure Heroku Scheduler to run this command periodically:
+Please note that you will need to configure Heroku Scheduler to run this command periodically (in my case I let this job run hourly):
 
 ```
 thangmo-job --config-dir=/app
