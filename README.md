@@ -26,6 +26,14 @@ You can use environment variables or a config file to deploy the bot.
 - `BITLY_ENABLED`: Enable this to have shortened links.
 - `BITLY_API_TOKEN`: Bitly API token.
 - `REDISCLOUD_URL`: Redis URL. This is used to make sure we don't receive duplicated notifications.
+- `RSS_CONFIG_BASE64`: A list of RSS channels encoded in base64 format. Useful if you want to deploy this on Heroku. Just encode a list of the channels (be careful with the indent whitespaces). For example:
+```
+- name: BBC Vietnamese
+  url: "https://www.bbc.co.uk/vietnamese/index.xml"
+- name: StatusCode Weekly
+  url: "https://weekly.statuscode.com/rss/"
+  telegram_channel: "-1001340592770"
+```
 
 ### Using config file (config.yaml)
 
@@ -59,14 +67,6 @@ redis:
   port: 6379
   username: ""
   password: ""
-```
-RSS channels can also be config via an environment variable named `RSS_CONFIG_BASE64`. Useful if you want to deploy this on Heroku. Just encode a list of the channels (be careful with the indent whitespaces). For example:
-```
-- name: BBC Vietnamese
-  url: "https://www.bbc.co.uk/vietnamese/index.xml"
-- name: StatusCode Weekly
-  url: "https://weekly.statuscode.com/rss/"
-  telegram_channel: "-1001340592770"
 ```
 # Development
 There're Dockerfile and docker-compose.yml.sample files to help get this app up and running in a local environment. Remember to set the correct values for the environment variables.
