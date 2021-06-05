@@ -5,6 +5,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/go-redis/redis"
 	"github.com/minhdanh/thangmo/internal/config"
@@ -15,9 +16,30 @@ import (
 )
 
 type ItemWrapper struct {
-	Item            interface{}
-	Prefix          string
-	RssLinkCheckSum string
+	Item             interface{}
+	Prefix           string
+	RssLinkCheckSum  string
+	TelegramApiToken string
+	TelegramChannel  string
+}
+
+func getHNItem(itemsChan chan ItemWrapper, hnClient *hackernews.HNClient, rc *redis.Client, minScore int, itemId int, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	if checked, err := alreadyChecked(rc, strconv.Itoa(itemId)); err != nil {
+		log.Println(err)
+		return
+	} else if checked {
+		log.Printf("HackerNews item %v already checked", itemId)
+		return
+	}
+	hnItem := hnClient.GetItem(itemId)
+	if hnItem.Score >= minScore {
+		// items = append(items, ItemWrapper{Item: hnItem})
+		itemsChan <- ItemWrapper{Item: hnItem}
+	} else {
+		log.Printf("HackerNews item %v doesn't have enough points (%v)", itemId, hnItem.Score)
+	}
 }
 
 func main() {
@@ -32,20 +54,21 @@ func main() {
 		hnClient := hackernews.NewHNClient()
 		hnItemIDs := hnClient.GetItemIDs()
 
+		itemsChan := make(chan ItemWrapper)
+		wg := new(sync.WaitGroup)
+
 		for _, itemId := range hnItemIDs {
-			if checked, err := alreadyChecked(rc, strconv.Itoa(itemId)); err != nil {
-				log.Println(err)
-				continue
-			} else if checked {
-				log.Printf("HackerNews item %v already checked", itemId)
-				continue
-			}
-			hnItem := hnClient.GetItem(itemId)
-			if hnItem.Score >= config.HackerNewsConfig.MinScore {
-				items = append(items, ItemWrapper{Item: hnItem})
-			} else {
-				log.Printf("HackerNews item %v doesn't have enough points (%v)", itemId, hnItem.Score)
-			}
+			wg.Add(1)
+			go getHNItem(itemsChan, hnClient, rc, config.HackerNewsConfig.MinScore, itemId, wg)
+		}
+
+		go func() {
+			wg.Wait()
+			close(itemsChan)
+		}()
+
+		for item := range itemsChan {
+			items = append(items, item)
 		}
 	}
 
