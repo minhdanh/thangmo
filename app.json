@@ -1,0 +1,51 @@
+{
+  "name": "thangmo",
+  "description": "A small app to send hot stories from HackerNews or links from RSS channels to Telegram channels",
+  "repository": "https://github.com/minhdanh/thangmo",
+  "keywords": ["go", "golang", "bot", "telegram", "hackernews", "rss", "feed"],
+  "env": {
+    "BITLY_API_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies",
+      "required": "false"
+    },
+    "BITLY_ENABLED": {
+      "description": "Whether or not use Bitly to shorten links",
+      "value": "true",
+      "required": "false"
+    },
+    "HACKERNEWS_ENABLED": {
+      "description": "Whether or not enable HackerNews posts",
+      "value": "true",
+      "required": "true"
+    },
+    "HACKERNEWS_MIN_SCORE": {
+      "description": "Minimum score of the posts",
+      "value": "200",
+      "required": "true"
+    },
+    "HACKERNEWS_YCOMBINATOR_LINK": {
+      "description": "Whether or not include a link to HackerNews",
+      "value": "true",
+      "required": "false"
+    },
+    "TELEGRAM_API_TOKEN": {
+      "description": "Telegram API token",
+      "required": "true"
+    },
+    "TELEGRAM_CHANNEL": {
+      "description": "Default Telegram channel to send messages to",
+      "required": "true"
+    }
+
+  },
+  "addons": [
+    {
+      "plan": "rediscloud:30",
+      "as": "REDISCLOUD"
+    },
+    {
+      "plan": "scheduler:standard",
+      "as": "SCHEDULER"
+    }
+  ]
+}
