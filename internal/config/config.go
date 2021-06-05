@@ -22,6 +22,8 @@ type Config struct {
 	RedisClient         *redis.Client
 	Port                int
 	DryRun              bool
+	RetryEnabled        bool
+	RetryCount          int
 }
 
 type HackerNewsConfig struct {
@@ -67,12 +69,19 @@ func NewConfig() *Config {
 
 	var config Config
 
+	// defaults
 	viper.SetDefault("Port", 3000)
+	viper.SetDefault("RetryEnabled", false)
+	viper.SetDefault("RetryCount", 1)
+
 	config.Port = viper.GetInt("port")
 
 	config.TelegramChannel = viper.GetString("telegram.channel")
 	config.TelegramApiToken = viper.GetString("telegram.api_token")
 	config.TelegramPreviewLink = viper.GetBool("telegram.preview_link")
+	// retry
+	config.RetryEnabled = viper.GetBool("retry.enabled")
+	config.RetryCount = viper.GetInt("retry.count")
 	// bitly
 	config.BitLyEnabled = viper.GetBool("bitly.enabled")
 	config.BitLyApiToken = viper.GetString("bitly.api_token")

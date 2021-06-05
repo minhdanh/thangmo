@@ -6,8 +6,10 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/go-redis/redis"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/minhdanh/thangmo/internal/config"
 	"github.com/minhdanh/thangmo/pkg/bitly"
 	"github.com/minhdanh/thangmo/pkg/hackernews"
@@ -117,11 +119,28 @@ func main() {
 			url = bitly.ShortenUrl(url)
 		}
 		if config.DryRun == false {
-			_, err := t.SendMessageForItem(item.Item, url, item.Prefix, item.TelegramChannel)
-			if err != nil {
-				log.Println(err)
-			} else {
-				rc.Set(redisKey, "", 0)
+			for i := 0; i < config.RetryCount+1; i++ {
+				if i > 0 {
+					log.Println("Retrying message...")
+				}
+				_, err := t.SendMessageForItem(item.Item, url, item.Prefix, item.TelegramChannel)
+
+				if err != nil {
+					log.Println(err)
+					err := err.(tgbotapi.Error)
+					// wait to retry only if rate limited
+					if err.Code == 429 {
+						log.Printf("Rate limited. Waiting for %v seconds before retrying.", err.ResponseParameters.RetryAfter)
+						time.Sleep(time.Second * time.Duration(err.ResponseParameters.RetryAfter+1))
+					}
+				} else {
+					rc.Set(redisKey, "", 0)
+					break
+				}
+
+				if config.RetryEnabled == false {
+					break
+				}
 			}
 		} else {
 			log.Println("dry-run mode is enabled. Not sending messages.")
