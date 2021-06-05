@@ -70,6 +70,14 @@ redis:
   username: ""
   password: ""
 ```
+# Heroku deployment
+You can click the `Deploy to Heroku` on the top section of this page to deploy this app to Heroku.
+Please note that you will need to configure Heroku Scheduler to run this command periodically:
+
+```
+thangmo-job --config-dir=/app
+```
+
 # Development
 There're Dockerfile and docker-compose.yml.sample files to help get this app up and running in a local environment. Remember to set the correct values for the environment variables.
 
