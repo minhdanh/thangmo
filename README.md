@@ -3,7 +3,9 @@ I used to use an app named Hooks to receive notifications of news items from Hac
 
 The name `thangmo` (full Vietnamese: `thằng mõ`) is the role name of a man in the villages of ancient Vietnam. His job was to go around the village to tell the villagers to gather at the communal house of the village. The people then will come to hear about the recent news in the area and the new policies from the feudal system.
 
-If you want to see how this bot works, check out this Telegram channel: https://t.me/thangmo
+Here's how a message sent to your Telegram channel will look like:
+
+![Sample Message](/sample_message.png)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
