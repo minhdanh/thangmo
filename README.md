@@ -83,7 +83,7 @@ There're Dockerfile and docker-compose.yml.sample files to help get this app up 
 
 ```
 # Create your docker-compose.yml file
-mv docker-compose.yml.sampl docker-compose.yml
+cp docker-compose.yml.sample docker-compose.yml
 
 # Then update the environment variables in docker-compose.yml
 
