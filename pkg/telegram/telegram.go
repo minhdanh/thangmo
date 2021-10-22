@@ -46,7 +46,7 @@ func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messag
 func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, messagePrefix string, telegramChannel string) (tgbotapi.Message, error) {
 	msgBody := strings.TrimSpace(item.Title) + "\n" + url
 	if messagePrefix != "" {
-		msgBody = messagePrefix + ": " + msgBody
+		msgBody = "<strong>" + messagePrefix + "</strong>" + ": " + msgBody
 	}
 	msg := tgbotapi.MessageConfig{}
 	if telegramChannel != "" {
@@ -62,7 +62,7 @@ func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, me
 }
 
 func (t *TelegramClient) sendMessageForHNItem(item hackernews.HNItem, url string) (tgbotapi.Message, error) {
-	msgBody := "HackerNews: " + item.Title
+	msgBody := "<strong>HackerNews</strong>: " + item.Title
 	if url != "" {
 		msgBody += "\n" + url
 	}
