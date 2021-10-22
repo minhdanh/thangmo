@@ -49,5 +49,5 @@ func (b *BitlyClient) ShortenUrl(longUrl string) string {
 
 	json.Unmarshal(body, &bitlink)
 
-	return bitlink.ID
+	return bitlink.Link
 }
