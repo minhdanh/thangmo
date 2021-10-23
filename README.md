@@ -21,7 +21,7 @@ Here's how a message sent to your Telegram channel will look like:
 
 `thangmo` requires a Redis server running so it can avoid sending duplicated messages, so please make sure you have a Redis server ready.
 
-The following commands will download and install `thangmo` to a Linux server. Please refer to the [releases page](https://github.com/minhdanh/thangmo/releases) for the latest version.
+The following commands will download and install `thangmo-job` to a Linux server. Please refer to the [releases page](https://github.com/minhdanh/thangmo/releases) for the latest version.
 ```
 wget https://github.com/minhdanh/thangmo/releases/download/v0.1.1/thangmo-job-v0.1.1-linux-amd64.tar.gz
 tar xvf thangmo-job.tar.gz
