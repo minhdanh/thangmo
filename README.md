@@ -17,13 +17,15 @@ Here's how a message sent to your Telegram channel will look like:
 # Installation
 `thangmo` includes two smaller go apps: `thangmo-web` and `thangmo-job`.
 `thangmo-job` is the main command that actually does the job.
-`thangmo-web` was done just for fun. It's not needed for the job to function.
+`thangmo-web` was done just for fun :D. It's not needed for the job to function.
+
 `thangmo` requires a Redis server running so it can avoid sending duplicated messages, so please make sure you have a Redis server ready.
 
-The following command will download and install `thangmo` to a Linux server. Please refer to the [releases page](/releases) for the latest version.
+The following commands will download and install `thangmo` to a Linux server. Please refer to the [releases page](https://github.com/minhdanh/thangmo/releases) for the latest version.
 ```
 wget https://github.com/minhdanh/thangmo/releases/download/v0.1.1/thangmo-job-v0.1.1-linux-amd64.tar.gz
 tar xvf thangmo-job.tar.gz
+chmod +x thangmo-job
 sudo mv thangmo-job /usr/local/bin/
 ```
 Then create a directory for the configuration file:
@@ -99,7 +101,7 @@ redis:
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 You can click the `Deploy to Heroku` button above to deploy this app to Heroku.
-Please note that you will need to configure Heroku Scheduler to run this command periodically (in my case I let this job run hourly):
+Please note that you will need to configure Heroku Scheduler to run this command periodically:
 
 ```
 thangmo-job --config-dir=/app
