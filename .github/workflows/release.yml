@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  release:
+    types: [created]
 
 jobs:
   releases-matrix:
@@ -25,4 +24,3 @@ jobs:
         goversion: "1.16"
         project_path: "./cmd/thangmo-job"
         binary_name: "thangmo-job"
-        release_tag: ${{ github.event.inputs.tags }}
