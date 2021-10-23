@@ -23,7 +23,7 @@ Here's how a message sent to your Telegram channel will look like:
 
 The following commands will download and install `thangmo-job` to a Linux server. Please refer to the [releases page](https://github.com/minhdanh/thangmo/releases) for the latest version.
 ```
-wget https://github.com/minhdanh/thangmo/releases/download/v0.1.1/thangmo-job-v0.1.1-linux-amd64.tar.gz
+wget https://github.com/minhdanh/thangmo/releases/download/v0.1.1/thangmo-job-v0.1.1-linux-amd64.tar.gz -O thangmo-job.tar.gz
 tar xvf thangmo-job.tar.gz
 chmod +x thangmo-job
 sudo mv thangmo-job /usr/local/bin/
@@ -32,7 +32,7 @@ Then create a directory for the configuration file:
 ```
 sudo mkdir /etc/thangmo
 ```
-You will need to put a file named `config.yaml` to this directory. Please refer to the section [Configurations](#configurations) for the content of this file. Make sure the values of the fields are set correctly.
+You will need to put a file named `config.yaml` to this directory. Please refer to section [Configurations](#configurations) for the content of this file. Make sure the values of the fields are set correctly.
 
 After that we need to create a cronjob to run `thangmo-job` periodically. For example the following cronjob will run `thangmo-job` hourly:
 ```
