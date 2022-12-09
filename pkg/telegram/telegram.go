@@ -44,7 +44,10 @@ func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messag
 }
 
 func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, messagePrefix string, telegramChannel string) (tgbotapi.Message, error) {
-	msgBody := strings.TrimSpace(item.Title) + "\n" + url
+	msgBody := strings.TrimSpace(item.Title)
+	if url != "" {
+		msgBody = "<a href=\"" + url + "\">" + msgBody + "</a>"
+	}
 	if messagePrefix != "" {
 		msgBody = "<strong>" + messagePrefix + "</strong>" + ": " + msgBody
 	}
@@ -62,12 +65,15 @@ func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, me
 }
 
 func (t *TelegramClient) sendMessageForHNItem(item hackernews.HNItem, url string) (tgbotapi.Message, error) {
-	msgBody := "<strong>HackerNews</strong>: " + item.Title
-	if url != "" {
-		msgBody += "\n" + url
-	}
+	msgBody := "<strong>HackerNews</strong>: "
 	if t.YcombinatorLink {
-		msgBody += "\n" + "https://news.ycombinator.com/item?id=" + strconv.Itoa(item.ID)
+		msgBody = "<strong><a href=\"https://news.ycombinator.com/item?id=" + strconv.Itoa(item.ID) + "\">HackerNews</a></strong>: "
+	}
+
+	if url != "" {
+		msgBody += "<a href=\"" + url + "\">" + item.Title + "</a>"
+	} else {
+		msgBody += item.Title
 	}
 	msg := tgbotapi.NewMessageToChannel(t.TelegramChannel, msgBody)
 	msg.DisableWebPagePreview = t.TelegramPreviewLink
