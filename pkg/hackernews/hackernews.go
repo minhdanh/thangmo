@@ -38,28 +38,40 @@ func (c *HNClient) GetItemIDs() []int {
 	var top500 []int
 	url := c.BaseUrl + "topstories.json?print=pretty"
 
-	response := c.makeRequest(url)
+	response, err := c.makeRequest(url)
+	if err != nil {
+		return []int{}
+	}
 	json.Unmarshal(response, &top500)
 
 	return top500
 }
 
-func (c *HNClient) GetItem(itemID int) HNItem {
+func (c *HNClient) GetItem(itemID int) (*HNItem, error) {
 	var item HNItem
 	log.Printf("Getting item %v\n", itemID)
 	url := c.BaseUrl + "item/" + strconv.Itoa(itemID) + ".json?print=pretty"
 
-	response := c.makeRequest(url)
+	response, err := c.makeRequest(url)
+	if err != nil {
+		return nil, err
+	}
 	json.Unmarshal(response, &item)
-	return item
+	return &item, nil
 }
 
-func (c *HNClient) makeRequest(url string) []byte {
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
+func (c *HNClient) makeRequest(url string) ([]byte, error) {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
 
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-	return body
+	body, err := ioutil.ReadAll(res.Body)
+	return body, err
 }

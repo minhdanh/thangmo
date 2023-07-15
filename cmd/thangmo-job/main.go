@@ -34,7 +34,11 @@ func getHNItem(itemsChan chan ItemWrapper, hnClient *hackernews.HNClient, rc *re
 		log.Printf("HackerNews item %v already checked", itemId)
 		return
 	}
-	hnItem := hnClient.GetItem(itemId)
+	hnItem, err := hnClient.GetItem(itemId)
+	if err != nil {
+		log.Printf("Error getting HackerNews item %v: %v", itemId, err)
+		return
+	}
 	if hnItem.Score >= minScore {
 		// items = append(items, ItemWrapper{Item: hnItem})
 		itemsChan <- ItemWrapper{Item: hnItem}
