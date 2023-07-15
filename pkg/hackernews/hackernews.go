@@ -55,7 +55,7 @@ func (c *HNClient) GetItem(itemID int) HNItem {
 }
 
 func (c *HNClient) makeRequest(url string) []byte {
-	req, _ := http.NewRequest("GET", url, nil)
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
 
 	res, _ := http.DefaultClient.Do(req)
 
