@@ -118,7 +118,7 @@ func NewConfig() *Config {
 	redisCloudUrl := os.Getenv("REDISCLOUD_URL")
 	redisOptions, err := redis.ParseURL(redisCloudUrl)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Warning: %v", err)
 	} else {
 		log.Println("Using Redis config from REDISCLOUD_URL")
 	}
