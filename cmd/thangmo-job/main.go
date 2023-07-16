@@ -109,7 +109,7 @@ func main() {
 	for _, item := range items {
 		var url, redisKey string
 		switch value := item.Item.(type) {
-		case hackernews.HNItem:
+		case *hackernews.HNItem:
 			log.Printf("Sending Telegram message, HackerNews item: %v", value.ID)
 			url = value.URL
 			redisKey = strconv.Itoa(value.ID)
