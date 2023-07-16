@@ -35,7 +35,7 @@ func NewClient(apiToken string, channel string, previewLink bool, ycombinatorLin
 
 func (t *TelegramClient) SendMessageForItem(item interface{}, url string, messagePrefix string, telegramChannel string) (tgbotapi.Message, error) {
 	switch value := item.(type) {
-	case hackernews.HNItem:
+	case *hackernews.HNItem:
 		return t.sendMessageForHNItem(value, url)
 	case *gofeed.Item:
 		return t.sendMessageForRSSItem(value, url, messagePrefix, telegramChannel)
@@ -64,7 +64,7 @@ func (t *TelegramClient) sendMessageForRSSItem(item *gofeed.Item, url string, me
 	return t.TelegramBot.Send(msg)
 }
 
-func (t *TelegramClient) sendMessageForHNItem(item hackernews.HNItem, url string) (tgbotapi.Message, error) {
+func (t *TelegramClient) sendMessageForHNItem(item *hackernews.HNItem, url string) (tgbotapi.Message, error) {
 	msgBody := "<strong>HackerNews</strong>: "
 	if t.YcombinatorLink {
 		msgBody = "<strong><a href=\"https://news.ycombinator.com/item?id=" + strconv.Itoa(item.ID) + "\">HackerNews</a></strong>: "
